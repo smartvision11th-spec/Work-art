@@ -1,0 +1,1 @@
+import Link from "next/link";export default function Cart(){return <section className="section"><p className="eyebrow">YOUR SELECTION</p><h1>Shopping bag</h1><p className="muted">Cart functionality will be connected in the next build stage.</p><Link className="button" href="/shop">Explore collection</Link></section>}

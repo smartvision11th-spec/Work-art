@@ -1,0 +1,1 @@
+import Link from "next/link";export function Header(){return <header><Link className="logo" href="/">ART<span>SELL</span></Link><nav><Link href="/shop">Shop</Link><Link href="/about">About</Link><Link href="/admin">Admin</Link><Link href="/cart">Bag</Link></nav></header>}

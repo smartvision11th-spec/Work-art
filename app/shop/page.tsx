@@ -1,0 +1,1 @@
+import {artworks} from "@/data/artworks";import {ArtworkCard} from "@/components/ArtworkCard";export default function Shop(){return <section className="section"><p className="eyebrow">THE COLLECTION</p><h1>All works</h1><div className="grid">{artworks.map(a=><ArtworkCard key={a.id} artwork={a}/>)}</div></section>}

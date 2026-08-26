@@ -1,0 +1,1 @@
+export default function About(){return <section className="section about"><p className="eyebrow">ABOUT ARTSELL</p><h1>Art should feel<br/><em>personal.</em></h1><p className="muted">ArtSell is a curated online gallery for original work and limited editions. The design is being built first, then we will connect the real database and store.</p></section>}
