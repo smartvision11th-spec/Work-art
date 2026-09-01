@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
 export async function GET() {
-  const { data, error, count } = await supabase
+  const { data, error } = await supabase
     .from("artworks")
-    .select("*", { count: "exact" })
+    .select("*")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -16,8 +16,5 @@ export async function GET() {
     );
   }
 
-  return NextResponse.json({
-    count,
-    data,
-  });
+  return NextResponse.json(data);
 }
