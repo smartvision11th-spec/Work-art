@@ -1,10 +1,11 @@
+```tsx
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
 export async function GET() {
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from("artworks")
-    .select("*")
+    .select("*", { count: "exact" })
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -16,5 +17,9 @@ export async function GET() {
     );
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json({
+    count,
+    data,
+  });
 }
+```
