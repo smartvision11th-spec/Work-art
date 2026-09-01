@@ -2,20 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArtworkCard } from "@/components/ArtworkCard";
-
-type Artwork = {
-  id: string;
-  title: string;
-  artist: string;
-  price: number;
-  category: string;
-  medium: string;
-  size: string;
-  edition: string;
-  description: string;
-  image_url: string;
-  created_at: string;
-};
+import type { Artwork } from "@/data/artworks";
 
 export default function Shop() {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -32,7 +19,23 @@ export default function Shop() {
         }
 
         const data = await response.json();
-        setArtworks(data);
+
+        const formattedArtworks: Artwork[] = data.map(
+          (artwork: any) => ({
+            id: artwork.id,
+            title: artwork.title,
+            artist: artwork.artist,
+            price: artwork.price,
+            category: artwork.category,
+            medium: artwork.medium,
+            size: artwork.size,
+            edition: artwork.edition,
+            description: artwork.description,
+            image: artwork.image_url,
+          })
+        );
+
+        setArtworks(formattedArtworks);
       } catch (err) {
         console.error(err);
         setError("Unable to load artworks.");
