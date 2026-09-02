@@ -1,4 +1,3 @@
-```tsx
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -47,4 +46,3 @@ export async function DELETE(request: Request) {
     );
   }
 }
-```
