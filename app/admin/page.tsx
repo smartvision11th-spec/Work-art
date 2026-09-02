@@ -1,9 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type Artwork = {
+  id: string;
+  title: string;
+  artist: string;
+  price: number;
+  category: string;
+  medium: string;
+  size: string;
+  edition: string;
+  description: string;
+  image_url: string;
+};
 
 export default function Admin() {
   const [showForm, setShowForm] = useState(false);
+
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [loadingArtworks, setLoadingArtworks] = useState(true);
+  const [artworkError, setArtworkError] = useState("");
 
   const [form, setForm] = useState({
     title: "",
@@ -19,6 +36,32 @@ export default function Admin() {
 
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+
+  async function fetchArtworks() {
+    try {
+      setLoadingArtworks(true);
+      setArtworkError("");
+
+      const response = await fetch("/api/artworks");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch artworks.");
+      }
+
+      const data = await response.json();
+
+      setArtworks(data);
+    } catch (error) {
+      console.error(error);
+      setArtworkError("Unable to load artworks.");
+    } finally {
+      setLoadingArtworks(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchArtworks();
+  }, []);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -63,6 +106,8 @@ export default function Admin() {
         description: "",
         image_url: "",
       });
+
+      await fetchArtworks();
     } catch (error) {
       console.error(error);
       setMessage("Unable to add artwork.");
@@ -89,7 +134,7 @@ export default function Admin() {
           style={{ cursor: "pointer" }}
         >
           <span>Collection</span>
-          <strong>Artworks</strong>
+          <strong>{showForm ? "Close" : "Add Artwork"}</strong>
         </div>
 
         <div className="adminCard">
@@ -103,7 +148,7 @@ export default function Admin() {
         </div>
       </div>
 
-      {showForm ? (
+      {showForm && (
         <div className="adminPanel">
           <h2>Add Artwork</h2>
 
@@ -193,37 +238,60 @@ export default function Admin() {
 
           {message && <p>{message}</p>}
         </div>
-      ) : (
-        <div className="adminPanel">
-          <h2>Overview</h2>
-
-          <p className="muted">
-            Manage your art collection from this dashboard.
-          </p>
-
-          <div className="adminStats">
-            <div>
-              <span>Total artworks</span>
-              <strong>5</strong>
-            </div>
-
-            <div>
-              <span>Orders</span>
-              <strong>0</strong>
-            </div>
-
-            <div>
-              <span>Revenue</span>
-              <strong>₹0</strong>
-            </div>
-
-            <div>
-              <span>Visitors</span>
-              <strong>0</strong>
-            </div>
-          </div>
-        </div>
       )}
+
+      <div className="adminPanel">
+        <h2>Artwork Manager</h2>
+
+        <p className="muted">
+          Manage artworks currently stored in Supabase.
+        </p>
+
+        {loadingArtworks && <p>Loading artworks...</p>}
+
+        {artworkError && <p>{artworkError}</p>}
+
+        {!loadingArtworks && !artworkError && artworks.length === 0 && (
+          <p>No artworks found.</p>
+        )}
+
+        {!loadingArtworks && !artworkError && artworks.length > 0 && (
+          <div>
+            {artworks.map((artwork) => (
+              <div
+                key={artwork.id}
+                className="adminArtwork"
+              >
+                <div>
+                  <strong>{artwork.title}</strong>
+
+                  <p className="muted">
+                    {artwork.artist}
+                  </p>
+
+                  <p>
+                    ₹{artwork.price.toLocaleString("en-IN")}
+                  </p>
+
+                  <small>
+                    {artwork.category} · {artwork.medium}
+                  </small>
+                </div>
+
+                <div>
+                  <button type="button">
+                    Edit
+                  </button>
+
+                  <button type="button">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
