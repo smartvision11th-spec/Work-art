@@ -251,46 +251,63 @@ export default function Admin() {
 
         {artworkError && <p>{artworkError}</p>}
 
-        {!loadingArtworks && !artworkError && artworks.length === 0 && (
-          <p>No artworks found.</p>
-        )}
+        {!loadingArtworks &&
+          !artworkError &&
+          artworks.length === 0 && (
+            <p>No artworks found.</p>
+          )}
 
-        {!loadingArtworks && !artworkError && artworks.length > 0 && (
-          <div>
-            {artworks.map((artwork) => (
-              <div
-                key={artwork.id}
-                className="adminArtwork"
-              >
-                <div>
-                  <strong>{artwork.title}</strong>
+        {!loadingArtworks &&
+          !artworkError &&
+          artworks.length > 0 && (
+            <div>
+              {artworks.map((artwork) => (
+                <div
+                  key={artwork.id}
+                  className="adminArtwork"
+                >
+                  <div>
+                    <img
+                      src={artwork.image_url}
+                      alt={artwork.title}
+                      style={{
+                        width: "140px",
+                        height: "140px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                        display: "block",
+                        marginBottom: "14px",
+                      }}
+                    />
 
-                  <p className="muted">
-                    {artwork.artist}
-                  </p>
+                    <strong>{artwork.title}</strong>
 
-                  <p>
-                    ₹{artwork.price.toLocaleString("en-IN")}
-                  </p>
+                    <p className="muted">
+                      {artwork.artist}
+                    </p>
 
-                  <small>
-                    {artwork.category} · {artwork.medium}
-                  </small>
+                    <p>
+                      ₹{artwork.price.toLocaleString("en-IN")}
+                    </p>
+
+                    <small>
+                      {artwork.category} · {artwork.medium}
+                    </small>
+                  </div>
+
+                  <div>
+                    <button type="button">
+                      Edit
+                    </button>
+
+                    <button type="button">
+                      Delete
+                    </button>
+                  </div>
                 </div>
-
-                <div>
-                  <button type="button">
-                    Edit
-                  </button>
-
-                  <button type="button">
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
       </div>
     </section>
   );
