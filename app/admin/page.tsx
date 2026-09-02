@@ -36,6 +36,7 @@ export default function Admin() {
 
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function fetchArtworks() {
     try {
@@ -113,6 +114,40 @@ export default function Admin() {
       setMessage("Unable to add artwork.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete(id: string, title: string) {
+    const confirmed = window.confirm(
+      `Delete "${title}"? This action cannot be undone.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingId(id);
+    setMessage("");
+
+    try {
+      const response = await fetch(`/api/artworks?id=${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete artwork.");
+      }
+
+      setMessage("Artwork deleted successfully.");
+
+      await fetchArtworks();
+    } catch (error) {
+      console.error(error);
+      setMessage("Unable to delete artwork.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -300,14 +335,24 @@ export default function Admin() {
                       Edit
                     </button>
 
-                    <button type="button">
-                      Delete
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleDelete(artwork.id, artwork.title)
+                      }
+                      disabled={deletingId === artwork.id}
+                    >
+                      {deletingId === artwork.id
+                        ? "Deleting..."
+                        : "Delete"}
                     </button>
                   </div>
                 </div>
               ))}
             </div>
           )}
+
+        {message && !showForm && <p>{message}</p>}
       </div>
     </section>
   );
