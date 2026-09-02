@@ -3,7 +3,73 @@
 import { useState } from "react";
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [showForm, setShowForm] = useState(false);
+
+  const [form, setForm] = useState({
+    title: "",
+    artist: "",
+    price: "",
+    category: "",
+    medium: "",
+    size: "",
+    edition: "",
+    description: "",
+    image_url: "",
+  });
+
+  const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    setSaving(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/artworks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to add artwork.");
+      }
+
+      setMessage("Artwork added successfully.");
+
+      setForm({
+        title: "",
+        artist: "",
+        price: "",
+        category: "",
+        medium: "",
+        size: "",
+        edition: "",
+        description: "",
+        image_url: "",
+      });
+    } catch (error) {
+      console.error(error);
+      setMessage("Unable to add artwork.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <section className="section">
@@ -12,102 +78,152 @@ export default function Admin() {
       <h1>Dashboard</h1>
 
       <div className="adminGrid">
-        <button
-          className={activeTab === "dashboard" ? "adminCard active" : "adminCard"}
-          onClick={() => setActiveTab("dashboard")}
-        >
+        <div className="adminCard">
           <span>Overview</span>
           <strong>Dashboard</strong>
-        </button>
+        </div>
 
-        <button
-          className={activeTab === "artworks" ? "adminCard active" : "adminCard"}
-          onClick={() => setActiveTab("artworks")}
+        <div
+          className="adminCard"
+          onClick={() => setShowForm(!showForm)}
+          style={{ cursor: "pointer" }}
         >
           <span>Collection</span>
           <strong>Artworks</strong>
-        </button>
+        </div>
 
-        <button
-          className={activeTab === "orders" ? "adminCard active" : "adminCard"}
-          onClick={() => setActiveTab("orders")}
-        >
+        <div className="adminCard">
           <span>Sales</span>
           <strong>Orders</strong>
-        </button>
+        </div>
 
-        <button
-          className={activeTab === "settings" ? "adminCard active" : "adminCard"}
-          onClick={() => setActiveTab("settings")}
-        >
+        <div className="adminCard">
           <span>Store</span>
           <strong>Settings</strong>
-        </button>
+        </div>
       </div>
 
-      <div className="adminPanel">
-        {activeTab === "dashboard" && (
-          <>
-            <h2>Overview</h2>
-            <p className="muted">
-              Your store management dashboard.
-            </p>
+      {showForm ? (
+        <div className="adminPanel">
+          <h2>Add Artwork</h2>
 
-            <div className="adminStats">
-              <div>
-                <span>Total artworks</span>
-                <strong>5</strong>
-              </div>
+          <p className="muted">
+            Add a new artwork to your collection.
+          </p>
 
-              <div>
-                <span>Orders</span>
-                <strong>0</strong>
-              </div>
+          <form onSubmit={handleSubmit}>
+            <input
+              name="title"
+              placeholder="Artwork title"
+              value={form.title}
+              onChange={handleChange}
+              required
+            />
 
-              <div>
-                <span>Revenue</span>
-                <strong>₹0</strong>
-              </div>
+            <input
+              name="artist"
+              placeholder="Artist name"
+              value={form.artist}
+              onChange={handleChange}
+              required
+            />
 
-              <div>
-                <span>Visitors</span>
-                <strong>0</strong>
-              </div>
-            </div>
-          </>
-        )}
+            <input
+              name="price"
+              type="number"
+              placeholder="Price"
+              value={form.price}
+              onChange={handleChange}
+              required
+            />
 
-        {activeTab === "artworks" && (
-          <>
-            <h2>Artworks</h2>
-            <p className="muted">
-              Manage the artworks displayed in your shop.
-            </p>
+            <input
+              name="category"
+              placeholder="Category"
+              value={form.category}
+              onChange={handleChange}
+              required
+            />
 
-            <button className="adminAction">
-              + Add Artwork
+            <input
+              name="medium"
+              placeholder="Medium"
+              value={form.medium}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="size"
+              placeholder="Size"
+              value={form.size}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="edition"
+              placeholder="Edition"
+              value={form.edition}
+              onChange={handleChange}
+              required
+            />
+
+            <textarea
+              name="description"
+              placeholder="Artwork description"
+              value={form.description}
+              onChange={handleChange}
+              rows={5}
+              required
+            />
+
+            <input
+              name="image_url"
+              placeholder="Image URL"
+              value={form.image_url}
+              onChange={handleChange}
+              required
+            />
+
+            <button type="submit" disabled={saving}>
+              {saving ? "Adding..." : "Add Artwork"}
             </button>
-          </>
-        )}
+          </form>
 
-        {activeTab === "orders" && (
-          <>
-            <h2>Orders</h2>
-            <p className="muted">
-              Customer orders will appear here.
-            </p>
-          </>
-        )}
+          {message && <p>{message}</p>}
+        </div>
+      ) : (
+        <div className="adminPanel">
+          <h2>Overview</h2>
 
-        {activeTab === "settings" && (
-          <>
-            <h2>Settings</h2>
-            <p className="muted">
-              Store settings will be added later.
-            </p>
-          </>
-        )}
-      </div>
+          <p className="muted">
+            Manage your art collection from this dashboard.
+          </p>
+
+          <div className="adminStats">
+            <div>
+              <span>Total artworks</span>
+              <strong>5</strong>
+            </div>
+
+            <div>
+              <span>Orders</span>
+              <strong>0</strong>
+            </div>
+
+            <div>
+              <span>Revenue</span>
+              <strong>₹0</strong>
+            </div>
+
+            <div>
+              <span>Visitors</span>
+              <strong>0</strong>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
