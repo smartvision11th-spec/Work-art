@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
