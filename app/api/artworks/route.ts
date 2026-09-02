@@ -18,3 +18,74 @@ export async function GET() {
 
   return NextResponse.json(data);
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    const {
+      title,
+      artist,
+      price,
+      category,
+      medium,
+      size,
+      edition,
+      description,
+      image_url,
+    } = body;
+
+    if (
+      !title ||
+      !artist ||
+      !price ||
+      !category ||
+      !medium ||
+      !size ||
+      !edition ||
+      !description ||
+      !image_url
+    ) {
+      return NextResponse.json(
+        { error: "All artwork fields are required." },
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await supabase
+      .from("artworks")
+      .insert([
+        {
+          title,
+          artist,
+          price: Number(price),
+          category,
+          medium,
+          size,
+          edition,
+          description,
+          image_url,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
+    console.error("Request error:", error);
+
+    return NextResponse.json(
+      { error: "Invalid request." },
+      { status: 400 }
+    );
+  }
+}
