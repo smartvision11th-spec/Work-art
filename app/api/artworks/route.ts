@@ -196,8 +196,7 @@ export async function PATCH(request: Request) {
         image_url,
       })
       .eq("id", id)
-      .select()
-      .single();
+      .select("*");
 
     if (error) {
       console.error("Supabase update error:", error);
@@ -208,7 +207,14 @@ export async function PATCH(request: Request) {
       );
     }
 
-    return NextResponse.json(data);
+    if (!data || data.length === 0) {
+      return NextResponse.json(
+        { error: "Artwork not found or was not updated." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(data[0]);
   } catch (error) {
     console.error("Update request error:", error);
 
