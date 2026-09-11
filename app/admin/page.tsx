@@ -15,6 +15,18 @@ type Artwork = {
   image_url: string;
 };
 
+const emptyForm = {
+  title: "",
+  artist: "",
+  price: "",
+  category: "",
+  medium: "",
+  size: "",
+  edition: "",
+  description: "",
+  image_url: "",
+};
+
 export default function Admin() {
   const [showForm, setShowForm] = useState(false);
 
@@ -22,17 +34,9 @@ export default function Admin() {
   const [loadingArtworks, setLoadingArtworks] = useState(true);
   const [artworkError, setArtworkError] = useState("");
 
-  const [form, setForm] = useState({
-    title: "",
-    artist: "",
-    price: "",
-    category: "",
-    medium: "",
-    size: "",
-    edition: "",
-    description: "",
-    image_url: "",
-  });
+  const [form, setForm] = useState(emptyForm);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
@@ -73,6 +77,32 @@ export default function Admin() {
     });
   }
 
+  function handleEdit(artwork: Artwork) {
+    setEditingId(artwork.id);
+
+    setForm({
+      title: artwork.title,
+      artist: artwork.artist,
+      price: String(artwork.price),
+      category: artwork.category,
+      medium: artwork.medium,
+      size: artwork.size,
+      edition: artwork.edition,
+      description: artwork.description,
+      image_url: artwork.image_url,
+    });
+
+    setShowForm(true);
+    setMessage("");
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setForm(emptyForm);
+    setShowForm(false);
+    setMessage("");
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -80,8 +110,16 @@ export default function Admin() {
     setMessage("");
 
     try {
-      const response = await fetch("/api/artworks", {
-        method: "POST",
+      const isEditing = editingId !== null;
+
+      const url = isEditing
+        ? `/api/artworks?id=${editingId}`
+        : "/api/artworks";
+
+      const method = isEditing ? "PATCH" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -91,27 +129,32 @@ export default function Admin() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to add artwork.");
+        throw new Error(
+          data.error ||
+            (isEditing
+              ? "Failed to update artwork."
+              : "Failed to add artwork.")
+        );
       }
 
-      setMessage("Artwork added successfully.");
+      setMessage(
+        isEditing
+          ? "Artwork updated successfully."
+          : "Artwork added successfully."
+      );
 
-      setForm({
-        title: "",
-        artist: "",
-        price: "",
-        category: "",
-        medium: "",
-        size: "",
-        edition: "",
-        description: "",
-        image_url: "",
-      });
+      setForm(emptyForm);
+      setEditingId(null);
 
       await fetchArtworks();
     } catch (error) {
       console.error(error);
-      setMessage("Unable to add artwork.");
+
+      setMessage(
+        editingId
+          ? "Unable to update artwork."
+          : "Unable to add artwork."
+      );
     } finally {
       setSaving(false);
     }
@@ -165,11 +208,23 @@ export default function Admin() {
 
         <div
           className="adminCard"
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            if (editingId) {
+              cancelEdit();
+            } else {
+              setShowForm(!showForm);
+            }
+          }}
           style={{ cursor: "pointer" }}
         >
           <span>Collection</span>
-          <strong>{showForm ? "Close" : "Add Artwork"}</strong>
+          <strong>
+            {editingId
+              ? "Close Edit"
+              : showForm
+              ? "Close"
+              : "Add Artwork"}
+          </strong>
         </div>
 
         <div className="adminCard">
@@ -185,10 +240,12 @@ export default function Admin() {
 
       {showForm && (
         <div className="adminPanel">
-          <h2>Add Artwork</h2>
+          <h2>{editingId ? "Edit Artwork" : "Add Artwork"}</h2>
 
           <p className="muted">
-            Add a new artwork to your collection.
+            {editingId
+              ? "Update the artwork details below."
+              : "Add a new artwork to your collection."}
           </p>
 
           <form onSubmit={handleSubmit}>
@@ -267,8 +324,24 @@ export default function Admin() {
             />
 
             <button type="submit" disabled={saving}>
-              {saving ? "Adding..." : "Add Artwork"}
+              {saving
+                ? editingId
+                  ? "Saving..."
+                  : "Adding..."
+                : editingId
+                ? "Save Changes"
+                : "Add Artwork"}
             </button>
+
+            {editingId && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                disabled={saving}
+              >
+                Cancel Edit
+              </button>
+            )}
           </form>
 
           {message && <p>{message}</p>}
@@ -331,7 +404,10 @@ export default function Admin() {
                   </div>
 
                   <div>
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() => handleEdit(artwork)}
+                    >
                       Edit
                     </button>
 
