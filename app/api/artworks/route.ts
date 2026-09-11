@@ -138,3 +138,83 @@ export async function DELETE(request: Request) {
     );
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Artwork ID is required." },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
+
+    const {
+      title,
+      artist,
+      price,
+      category,
+      medium,
+      size,
+      edition,
+      description,
+      image_url,
+    } = body;
+
+    if (
+      !title ||
+      !artist ||
+      !price ||
+      !category ||
+      !medium ||
+      !size ||
+      !edition ||
+      !description ||
+      !image_url
+    ) {
+      return NextResponse.json(
+        { error: "All artwork fields are required." },
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await supabase
+      .from("artworks")
+      .update({
+        title,
+        artist,
+        price: Number(price),
+        category,
+        medium,
+        size,
+        edition,
+        description,
+        image_url,
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Supabase update error:", error);
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Update request error:", error);
+
+    return NextResponse.json(
+      { error: "Invalid request." },
+      { status: 400 }
+    );
+  }
+}
