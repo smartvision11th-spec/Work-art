@@ -1,22 +1,51 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
-export async function GET() {
-  const { data, error } = await supabase
-    .from("artworks")
-    .select("*")
-    .order("created_at", { ascending: false });
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
 
-  if (error) {
-    console.error("Supabase error:", error);
+    let query = supabase
+      .from("artworks")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (id) {
+      query = query.eq("id", id);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Supabase error:", error);
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+
+    if (id) {
+      if (!data || data.length === 0) {
+        return NextResponse.json(
+          { error: "Artwork not found." },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json(data[0]);
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("GET request error:", error);
 
     return NextResponse.json(
-      { error: error.message },
+      { error: "Unable to load artworks." },
       { status: 500 }
     );
   }
-
-  return NextResponse.json(data);
 }
 
 export async function POST(request: Request) {
