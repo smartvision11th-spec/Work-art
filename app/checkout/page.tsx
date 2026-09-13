@@ -14,6 +14,8 @@ type CartItem = {
 export default function Checkout() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -48,10 +50,53 @@ export default function Checkout() {
     });
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    alert("Checkout form submitted successfully.");
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer_name: form.name,
+          phone: form.phone,
+          address: form.address,
+          city: form.city,
+          state: form.state,
+          pincode: form.pincode,
+          total,
+          payment_method: "COD",
+          items: cart,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Unable to place order."
+        );
+      }
+
+      localStorage.removeItem("art-cart");
+
+      window.location.href = `/order-success?id=${data.id}`;
+    } catch (error) {
+      console.error("Order submission error:", error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unable to place order."
+      );
+
+      setSubmitting(false);
+    }
   }
 
   const total = cart.reduce(
@@ -193,11 +238,20 @@ export default function Checkout() {
             Payment method: Cash on Delivery
           </p>
 
+          {error && (
+            <p style={{ color: "red" }}>
+              {error}
+            </p>
+          )}
+
           <button
             className="button"
             type="submit"
+            disabled={submitting}
           >
-            Place COD Order
+            {submitting
+              ? "Placing Order..."
+              : "Place COD Order"}
           </button>
         </form>
 
