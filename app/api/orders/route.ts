@@ -33,10 +33,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data, error } = await supabase
+    const orderId = crypto.randomUUID();
+
+    const { error } = await supabase
       .from("orders")
       .insert([
         {
+          id: orderId,
           customer_name,
           phone,
           address,
@@ -48,9 +51,7 @@ export async function POST(request: Request) {
           status: "Pending",
           items,
         },
-      ])
-      .select()
-      .single();
+      ]);
 
     if (error) {
       console.error("Order insert error:", error);
@@ -61,7 +62,13 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(
+      {
+        success: true,
+        id: orderId,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Order request error:", error);
 
