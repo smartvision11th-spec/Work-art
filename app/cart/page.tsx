@@ -122,15 +122,12 @@ export default function Cart() {
               Total: ₹{total.toLocaleString("en-IN")}
             </h2>
 
-            <button
+            <Link
               className="button"
-              type="button"
-              onClick={() => {
-                alert("Checkout will be available next.");
-              }}
+              href="/checkout"
             >
               Proceed to Checkout
-            </button>
+            </Link>
           </div>
 
           <div style={{ marginTop: "20px" }}>
