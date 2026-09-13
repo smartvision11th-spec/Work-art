@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 type Artwork = {
   id: string;
@@ -40,6 +41,7 @@ export default function Admin() {
 
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function fetchArtworks() {
@@ -77,6 +79,63 @@ export default function Admin() {
     });
   }
 
+  async function handleImageUpload(
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    try {
+      const file = e.target.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+      setUploading(true);
+      setMessage("");
+
+      const fileExt = file.name.split(".").pop();
+
+      const fileName = `${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2)}.${fileExt}`;
+
+      const filePath = `artworks/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("Artwork")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error("Image upload error:", uploadError);
+        throw new Error(uploadError.message);
+      }
+
+      const { data } = supabase.storage
+        .from("Artwork")
+        .getPublicUrl(filePath);
+
+      if (!data.publicUrl) {
+        throw new Error("Could not get image URL.");
+      }
+
+      setForm({
+        ...form,
+        image_url: data.publicUrl,
+      });
+
+      setMessage("Image uploaded successfully.");
+    } catch (error) {
+      console.error(error);
+
+      setMessage(
+        error instanceof Error
+          ? `Image upload failed: ${error.message}`
+          : "Image upload failed."
+      );
+    } finally {
+      setUploading(false);
+    }
+  }
+
   function handleEdit(artwork: Artwork) {
     setEditingId(artwork.id);
 
@@ -105,6 +164,11 @@ export default function Admin() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!form.image_url) {
+      setMessage("Please upload an artwork image first.");
+      return;
+    }
 
     setSaving(true);
     setMessage("");
@@ -151,7 +215,9 @@ export default function Admin() {
       console.error(error);
 
       setMessage(
-        editingId
+        error instanceof Error
+          ? error.message
+          : editingId
           ? "Unable to update artwork."
           : "Unable to add artwork."
       );
@@ -315,15 +381,38 @@ export default function Admin() {
               required
             />
 
-            <input
-              name="image_url"
-              placeholder="Image URL"
-              value={form.image_url}
-              onChange={handleChange}
-              required
-            />
+            <div>
+              <label>Artwork Image</label>
 
-            <button type="submit" disabled={saving}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={uploading || saving}
+              />
+
+              {uploading && <p>Uploading image...</p>}
+
+              {form.image_url && (
+                <div style={{ marginTop: "12px" }}>
+                  <img
+                    src={form.image_url}
+                    alt="Artwork preview"
+                    style={{
+                      width: "180px",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={saving || uploading}
+            >
               {saving
                 ? editingId
                   ? "Saving..."
@@ -337,7 +426,7 @@ export default function Admin() {
               <button
                 type="button"
                 onClick={cancelEdit}
-                disabled={saving}
+                disabled={saving || uploading}
               >
                 Cancel Edit
               </button>
