@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 type Artwork = {
   id: string;
@@ -15,27 +17,105 @@ type Artwork = {
   image_url: string;
 };
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+type CartItem = {
+  id: string;
+  title: string;
+  artist: string;
+  price: number;
+  image: string;
+};
 
-  const { data: artwork, error } = await supabase
-    .from("artworks")
-    .select("*")
-    .eq("id", id)
-    .single();
+export default function Page() {
+  const params = useParams();
+  const id = params.id as string;
 
-  if (error || !artwork) {
-    console.error("Artwork detail error:", error);
-    notFound();
+  const [artwork, setArtwork] = useState<Artwork | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    async function fetchArtwork() {
+      try {
+        const response = await fetch(`/api/artworks?id=${id}`);
+
+        if (!response.ok) {
+          throw new Error("Failed to load artwork.");
+        }
+
+        const data = await response.json();
+
+        setArtwork(data);
+      } catch (error) {
+        console.error("Artwork loading error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchArtwork();
+  }, [id]);
+
+  function addToBag() {
+    if (!artwork) {
+      return;
+    }
+
+    const existingCart = localStorage.getItem("art-cart");
+
+    const cart: CartItem[] = existingCart
+      ? JSON.parse(existingCart)
+      : [];
+
+    const alreadyInCart = cart.some(
+      (item) => item.id === artwork.id
+    );
+
+    if (alreadyInCart) {
+      setMessage("Already in your bag.");
+      return;
+    }
+
+    cart.push({
+      id: artwork.id,
+      title: artwork.title,
+      artist: artwork.artist,
+      price: artwork.price,
+      image: artwork.image_url,
+    });
+
+    localStorage.setItem(
+      "art-cart",
+      JSON.stringify(cart)
+    );
+
+    setMessage("Added to bag.");
+  }
+
+  if (loading) {
+    return (
+      <section className="section">
+        <p>Loading artwork...</p>
+      </section>
+    );
+  }
+
+  if (!artwork) {
+    return (
+      <section className="section">
+        <h1>Artwork not found</h1>
+
+        <Link href="/shop">
+          ← Back to collection
+        </Link>
+      </section>
+    );
   }
 
   return (
     <section className="section detail">
-      <Link href="/shop">← Back to collection</Link>
+      <Link href="/shop">
+        ← Back to collection
+      </Link>
 
       <div className="detailGrid">
         <div className="detailImage">
@@ -51,7 +131,9 @@ export default async function Page({
         </div>
 
         <div>
-          <p className="eyebrow">{artwork.category}</p>
+          <p className="eyebrow">
+            {artwork.category}
+          </p>
 
           <h1>{artwork.title}</h1>
 
@@ -79,9 +161,15 @@ export default async function Page({
             </span>
           </div>
 
-          <button className="button">
+          <button
+            className="button"
+            type="button"
+            onClick={addToBag}
+          >
             Add to bag
           </button>
+
+          {message && <p>{message}</p>}
         </div>
       </div>
     </section>
