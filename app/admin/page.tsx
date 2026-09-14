@@ -4,521 +4,543 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 type Artwork = {
-  id: string;
-  title: string;
-  artist: string;
-  price: number;
-  category: string;
-  medium: string;
-  size: string;
-  edition: string;
-  description: string;
-  image_url: string;
+id: string;
+title: string;
+artist: string;
+price: number;
+category: string;
+medium: string;
+size: string;
+edition: string;
+description: string;
+image_url: string;
 };
 
 const emptyForm = {
-  title: "",
-  artist: "",
-  price: "",
-  category: "",
-  medium: "",
-  size: "",
-  edition: "",
-  description: "",
-  image_url: "",
+title: "",
+artist: "",
+price: "",
+category: "",
+medium: "",
+size: "",
+edition: "",
+description: "",
+image_url: "",
 };
 
 export default function Admin() {
-  const [showForm, setShowForm] = useState(false);
+const [showForm, setShowForm] = useState(false);
 
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [loadingArtworks, setLoadingArtworks] = useState(true);
-  const [artworkError, setArtworkError] = useState("");
+const [artworks, setArtworks] = useState<Artwork[]>([]);
+const [loadingArtworks, setLoadingArtworks] = useState(true);
+const [artworkError, setArtworkError] = useState("");
 
-  const [form, setForm] = useState(emptyForm);
+const [form, setForm] = useState(emptyForm);
 
-  const [editingId, setEditingId] = useState<string | null>(null);
+const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [message, setMessage] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+const [message, setMessage] = useState("");
+const [saving, setSaving] = useState(false);
+const [uploading, setUploading] = useState(false);
+const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  async function fetchArtworks() {
-    try {
-      setLoadingArtworks(true);
-      setArtworkError("");
+async function fetchArtworks() {
+try {
+setLoadingArtworks(true);
+setArtworkError("");
 
-      const response = await fetch("/api/artworks");
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch artworks.");
-      }
+  const response = await fetch("/api/artworks");
 
-      const data = await response.json();
-
-      setArtworks(data);
-    } catch (error) {
-      console.error(error);
-      setArtworkError("Unable to load artworks.");
-    } finally {
-      setLoadingArtworks(false);
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch artworks.");
   }
 
-  useEffect(() => {
-    fetchArtworks();
-  }, []);
+  const data = await response.json();
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+  setArtworks(data);
+} catch (error) {
+  console.error(error);
+  setArtworkError("Unable to load artworks.");
+} finally {
+  setLoadingArtworks(false);
+}
+
+}
+
+useEffect(() => {
+fetchArtworks();
+}, []);
+
+async function handleSignOut() {
+await supabase.auth.signOut();
+window.location.href = "/admin/login";
+}
+
+function handleChange(
+e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) {
+setForm({
+...form,
+[e.target.name]: e.target.value,
+});
+}
+
+async function handleImageUpload(
+e: React.ChangeEvent<HTMLInputElement>
+) {
+try {
+const file = e.target.files?.[0];
+
+
+  if (!file) {
+    return;
   }
 
-  async function handleImageUpload(
-    e: React.ChangeEvent<HTMLInputElement>
-  ) {
-    try {
-      const file = e.target.files?.[0];
+  setUploading(true);
+  setMessage("");
 
-      if (!file) {
-        return;
-      }
+  const fileExt = file.name.split(".").pop();
 
-      setUploading(true);
-      setMessage("");
+  const fileName = `${Date.now()}-${Math.random()
+    .toString(36)
+    .substring(2)}.${fileExt}`;
 
-      const fileExt = file.name.split(".").pop();
+  const filePath = `artworks/${fileName}`;
 
-      const fileName = `${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2)}.${fileExt}`;
+  const { error: uploadError } = await supabase.storage
+    .from("Artwork")
+    .upload(filePath, file);
 
-      const filePath = `artworks/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("Artwork")
-        .upload(filePath, file);
-
-      if (uploadError) {
-        console.error("Image upload error:", uploadError);
-        throw new Error(uploadError.message);
-      }
-
-      const { data } = supabase.storage
-        .from("Artwork")
-        .getPublicUrl(filePath);
-
-      if (!data.publicUrl) {
-        throw new Error("Could not get image URL.");
-      }
-
-      setForm({
-        ...form,
-        image_url: data.publicUrl,
-      });
-
-      setMessage("Image uploaded successfully.");
-    } catch (error) {
-      console.error(error);
-
-      setMessage(
-        error instanceof Error
-          ? `Image upload failed: ${error.message}`
-          : "Image upload failed."
-      );
-    } finally {
-      setUploading(false);
-    }
+  if (uploadError) {
+    console.error("Image upload error:", uploadError);
+    throw new Error(uploadError.message);
   }
 
-  function handleEdit(artwork: Artwork) {
-    setEditingId(artwork.id);
+  const { data } = supabase.storage
+    .from("Artwork")
+    .getPublicUrl(filePath);
 
-    setForm({
-      title: artwork.title,
-      artist: artwork.artist,
-      price: String(artwork.price),
-      category: artwork.category,
-      medium: artwork.medium,
-      size: artwork.size,
-      edition: artwork.edition,
-      description: artwork.description,
-      image_url: artwork.image_url,
-    });
-
-    setShowForm(true);
-    setMessage("");
+  if (!data.publicUrl) {
+    throw new Error("Could not get image URL.");
   }
 
-  function cancelEdit() {
-    setEditingId(null);
-    setForm(emptyForm);
-    setShowForm(false);
-    setMessage("");
-  }
+  setForm({
+    ...form,
+    image_url: data.publicUrl,
+  });
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  setMessage("Image uploaded successfully.");
+} catch (error) {
+  console.error(error);
 
-    if (!form.image_url) {
-      setMessage("Please upload an artwork image first.");
-      return;
-    }
+  setMessage(
+    error instanceof Error
+      ? `Image upload failed: ${error.message}`
+      : "Image upload failed."
+  );
+} finally {
+  setUploading(false);
+}
 
-    setSaving(true);
-    setMessage("");
+}
 
-    try {
-      const isEditing = editingId !== null;
+function handleEdit(artwork: Artwork) {
+setEditingId(artwork.id);
 
-      const url = isEditing
-        ? `/api/artworks?id=${editingId}`
-        : "/api/artworks";
+setForm({
+  title: artwork.title,
+  artist: artwork.artist,
+  price: String(artwork.price),
+  category: artwork.category,
+  medium: artwork.medium,
+  size: artwork.size,
+  edition: artwork.edition,
+  description: artwork.description,
+  image_url: artwork.image_url,
+});
 
-      const method = isEditing ? "PATCH" : "POST";
+setShowForm(true);
+setMessage("");
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+}
 
-      const data = await response.json();
+function cancelEdit() {
+setEditingId(null);
+setForm(emptyForm);
+setShowForm(false);
+setMessage("");
+}
 
-      if (!response.ok) {
-        throw new Error(
-          data.error ||
-            (isEditing
-              ? "Failed to update artwork."
-              : "Failed to add artwork.")
-        );
-      }
+async function handleSubmit(e: React.FormEvent) {
+e.preventDefault();
 
-      setMessage(
-        isEditing
-          ? "Artwork updated successfully."
-          : "Artwork added successfully."
-      );
 
-      setForm(emptyForm);
-      setEditingId(null);
+if (!form.image_url) {
+  setMessage("Please upload an artwork image first.");
+  return;
+}
 
-      await fetchArtworks();
-    } catch (error) {
-      console.error(error);
+setSaving(true);
+setMessage("");
 
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : editingId
-          ? "Unable to update artwork."
-          : "Unable to add artwork."
-      );
-    } finally {
-      setSaving(false);
-    }
-  }
+try {
+  const isEditing = editingId !== null;
 
-  async function handleDelete(id: string, title: string) {
-    const confirmed = window.confirm(
-      `Delete "${title}"? This action cannot be undone.`
+  const url = isEditing
+    ? `/api/artworks?id=${editingId}`
+    : "/api/artworks";
+
+  const method = isEditing ? "PATCH" : "POST";
+
+  const response = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(form),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.error ||
+        (isEditing
+          ? "Failed to update artwork."
+          : "Failed to add artwork.")
     );
-
-    if (!confirmed) {
-      return;
-    }
-
-    setDeletingId(id);
-    setMessage("");
-
-    try {
-      const response = await fetch(`/api/artworks?id=${id}`, {
-        method: "DELETE",
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to delete artwork.");
-      }
-
-      setMessage("Artwork deleted successfully.");
-
-      await fetchArtworks();
-    } catch (error) {
-      console.error(error);
-      setMessage("Unable to delete artwork.");
-    } finally {
-      setDeletingId(null);
-    }
   }
 
-  return (
-    <section className="section">
-      <p className="eyebrow">ADMIN PANEL</p>
+  setMessage(
+    isEditing
+      ? "Artwork updated successfully."
+      : "Artwork added successfully."
+  );
 
-      <h1>Dashboard</h1>
+  setForm(emptyForm);
+  setEditingId(null);
 
-      <div className="adminGrid">
-        <div className="adminCard">
-          <span>Overview</span>
-          <strong>Dashboard</strong>
-        </div>
+  await fetchArtworks();
+} catch (error) {
+  console.error(error);
 
-        <div
-          className="adminCard"
-          onClick={() => {
-            if (editingId) {
-              cancelEdit();
-            } else {
-              setShowForm(!showForm);
-            }
-          }}
-          style={{ cursor: "pointer" }}
-        >
-          <span>Collection</span>
-          <strong>
-            {editingId
-              ? "Close Edit"
-              : showForm
-              ? "Close"
-              : "Add Artwork"}
-          </strong>
-        </div>
+  setMessage(
+    error instanceof Error
+      ? error.message
+      : editingId
+      ? "Unable to update artwork."
+      : "Unable to add artwork."
+  );
+} finally {
+  setSaving(false);
+}
 
-        <div className="adminCard">
-          <span>Sales</span>
-          <strong>Orders</strong>
-        </div>
 
-        <div className="adminCard">
-          <span>Store</span>
-          <strong>Settings</strong>
-        </div>
-      </div>
+}
 
-      {showForm && (
-        <div className="adminPanel">
-          <h2>{editingId ? "Edit Artwork" : "Add Artwork"}</h2>
+async function handleDelete(id: string, title: string) {
+const confirmed = window.confirm(
+`Delete "${title}"? This action cannot be undone.`
+);
 
-          <p className="muted">
-            {editingId
-              ? "Update the artwork details below."
-              : "Add a new artwork to your collection."}
-          </p>
+if (!confirmed) {
+  return;
+}
 
-          <form onSubmit={handleSubmit}>
-            <input
-              name="title"
-              placeholder="Artwork title"
-              value={form.title}
-              onChange={handleChange}
-              required
-            />
+setDeletingId(id);
+setMessage("");
 
-            <input
-              name="artist"
-              placeholder="Artist name"
-              value={form.artist}
-              onChange={handleChange}
-              required
-            />
+try {
+  const response = await fetch(`/api/artworks?id=${id}`, {
+    method: "DELETE",
+  });
 
-            <input
-              name="price"
-              type="number"
-              placeholder="Price"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
+  const data = await response.json();
 
-            <input
-              name="category"
-              placeholder="Category"
-              value={form.category}
-              onChange={handleChange}
-              required
-            />
+  if (!response.ok) {
+    throw new Error(data.error || "Failed to delete artwork.");
+  }
 
-            <input
-              name="medium"
-              placeholder="Medium"
-              value={form.medium}
-              onChange={handleChange}
-              required
-            />
+  setMessage("Artwork deleted successfully.");
 
-            <input
-              name="size"
-              placeholder="Size"
-              value={form.size}
-              onChange={handleChange}
-              required
-            />
+  await fetchArtworks();
+} catch (error) {
+  console.error(error);
+  setMessage("Unable to delete artwork.");
+} finally {
+  setDeletingId(null);
+}
 
-            <input
-              name="edition"
-              placeholder="Edition"
-              value={form.edition}
-              onChange={handleChange}
-              required
-            />
+}
 
-            <textarea
-              name="description"
-              placeholder="Artwork description"
-              value={form.description}
-              onChange={handleChange}
-              rows={5}
-              required
-            />
+return ( <section className="section"> <p className="eyebrow">ADMIN PANEL</p>
 
-            <div>
-              <label>Artwork Image</label>
+  <h1>Dashboard</h1>
 
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                disabled={uploading || saving}
+  <button
+    type="button"
+    onClick={handleSignOut}
+    style={{ marginBottom: "24px" }}
+  >
+    Sign Out
+  </button>
+
+  <div className="adminGrid">
+    <div className="adminCard">
+      <span>Overview</span>
+      <strong>Dashboard</strong>
+    </div>
+
+    <div
+      className="adminCard"
+      onClick={() => {
+        if (editingId) {
+          cancelEdit();
+        } else {
+          setShowForm(!showForm);
+        }
+      }}
+      style={{ cursor: "pointer" }}
+    >
+      <span>Collection</span>
+      <strong>
+        {editingId
+          ? "Close Edit"
+          : showForm
+          ? "Close"
+          : "Add Artwork"}
+      </strong>
+    </div>
+
+    <div className="adminCard">
+      <span>Sales</span>
+      <strong>Orders</strong>
+    </div>
+
+    <div className="adminCard">
+      <span>Store</span>
+      <strong>Settings</strong>
+    </div>
+  </div>
+
+  {showForm && (
+    <div className="adminPanel">
+      <h2>{editingId ? "Edit Artwork" : "Add Artwork"}</h2>
+
+      <p className="muted">
+        {editingId
+          ? "Update the artwork details below."
+          : "Add a new artwork to your collection."}
+      </p>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          name="title"
+          placeholder="Artwork title"
+          value={form.title}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="artist"
+          placeholder="Artist name"
+          value={form.artist}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="price"
+          type="number"
+          placeholder="Price"
+          value={form.price}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="category"
+          placeholder="Category"
+          value={form.category}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="medium"
+          placeholder="Medium"
+          value={form.medium}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="size"
+          placeholder="Size"
+          value={form.size}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="edition"
+          placeholder="Edition"
+          value={form.edition}
+          onChange={handleChange}
+          required
+        />
+
+        <textarea
+          name="description"
+          placeholder="Artwork description"
+          value={form.description}
+          onChange={handleChange}
+          rows={5}
+          required
+        />
+
+        <div>
+          <label>Artwork Image</label>
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            disabled={uploading || saving}
+          />
+
+          {uploading && <p>Uploading image...</p>}
+
+          {form.image_url && (
+            <div style={{ marginTop: "12px" }}>
+              <img
+                src={form.image_url}
+                alt="Artwork preview"
+                style={{
+                  width: "180px",
+                  height: "180px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
               />
-
-              {uploading && <p>Uploading image...</p>}
-
-              {form.image_url && (
-                <div style={{ marginTop: "12px" }}>
-                  <img
-                    src={form.image_url}
-                    alt="Artwork preview"
-                    style={{
-                      width: "180px",
-                      height: "180px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  />
-                </div>
-              )}
             </div>
+          )}
+        </div>
 
-            <button
-              type="submit"
-              disabled={saving || uploading}
+        <button
+          type="submit"
+          disabled={saving || uploading}
+        >
+          {saving
+            ? editingId
+              ? "Saving..."
+              : "Adding..."
+            : editingId
+            ? "Save Changes"
+            : "Add Artwork"}
+        </button>
+
+        {editingId && (
+          <button
+            type="button"
+            onClick={cancelEdit}
+            disabled={saving || uploading}
+          >
+            Cancel Edit
+          </button>
+        )}
+      </form>
+
+      {message && <p>{message}</p>}
+    </div>
+  )}
+
+  <div className="adminPanel">
+    <h2>Artwork Manager</h2>
+
+    <p className="muted">
+      Manage artworks currently stored in Supabase.
+    </p>
+
+    {loadingArtworks && <p>Loading artworks...</p>}
+
+    {artworkError && <p>{artworkError}</p>}
+
+    {!loadingArtworks &&
+      !artworkError &&
+      artworks.length === 0 && (
+        <p>No artworks found.</p>
+      )}
+
+    {!loadingArtworks &&
+      !artworkError &&
+      artworks.length > 0 && (
+        <div>
+          {artworks.map((artwork) => (
+            <div
+              key={artwork.id}
+              className="adminArtwork"
             >
-              {saving
-                ? editingId
-                  ? "Saving..."
-                  : "Adding..."
-                : editingId
-                ? "Save Changes"
-                : "Add Artwork"}
-            </button>
+              <div>
+                <img
+                  src={artwork.image_url}
+                  alt={artwork.title}
+                  style={{
+                    width: "140px",
+                    height: "140px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    display: "block",
+                    marginBottom: "14px",
+                  }}
+                />
 
-            {editingId && (
-              <button
-                type="button"
-                onClick={cancelEdit}
-                disabled={saving || uploading}
-              >
-                Cancel Edit
-              </button>
-            )}
-          </form>
+                <strong>{artwork.title}</strong>
 
-          {message && <p>{message}</p>}
+                <p className="muted">
+                  {artwork.artist}
+                </p>
+
+                <p>
+                  ₹{artwork.price.toLocaleString("en-IN")}
+                </p>
+
+                <small>
+                  {artwork.category} · {artwork.medium}
+                </small>
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={() => handleEdit(artwork)}
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleDelete(artwork.id, artwork.title)
+                  }
+                  disabled={deletingId === artwork.id}
+                >
+                  {deletingId === artwork.id
+                    ? "Deleting..."
+                    : "Delete"}
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      <div className="adminPanel">
-        <h2>Artwork Manager</h2>
+    {message && !showForm && <p>{message}</p>}
+  </div>
+</section>
 
-        <p className="muted">
-          Manage artworks currently stored in Supabase.
-        </p>
 
-        {loadingArtworks && <p>Loading artworks...</p>}
-
-        {artworkError && <p>{artworkError}</p>}
-
-        {!loadingArtworks &&
-          !artworkError &&
-          artworks.length === 0 && (
-            <p>No artworks found.</p>
-          )}
-
-        {!loadingArtworks &&
-          !artworkError &&
-          artworks.length > 0 && (
-            <div>
-              {artworks.map((artwork) => (
-                <div
-                  key={artwork.id}
-                  className="adminArtwork"
-                >
-                  <div>
-                    <img
-                      src={artwork.image_url}
-                      alt={artwork.title}
-                      style={{
-                        width: "140px",
-                        height: "140px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                        display: "block",
-                        marginBottom: "14px",
-                      }}
-                    />
-
-                    <strong>{artwork.title}</strong>
-
-                    <p className="muted">
-                      {artwork.artist}
-                    </p>
-
-                    <p>
-                      ₹{artwork.price.toLocaleString("en-IN")}
-                    </p>
-
-                    <small>
-                      {artwork.category} · {artwork.medium}
-                    </small>
-                  </div>
-
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(artwork)}
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(artwork.id, artwork.title)
-                      }
-                      disabled={deletingId === artwork.id}
-                    >
-                      {deletingId === artwork.id
-                        ? "Deleting..."
-                        : "Delete"}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-        {message && !showForm && <p>{message}</p>}
-      </div>
-    </section>
-  );
+);
 }
