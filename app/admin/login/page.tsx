@@ -15,7 +15,6 @@ const [error, setError] = useState("");
 async function handleLogin(e: React.FormEvent) {
 e.preventDefault();
 
-```
 setLoading(true);
 setError("");
 
@@ -31,13 +30,12 @@ if (error) {
 }
 
 router.push("/admin");
-```
 
 }
 
 return ( <section className="section"> <p className="eyebrow">ADMIN ACCESS</p>
 
-```
+
   <h1>Admin Login</h1>
 
   <p className="muted">
