@@ -94,8 +94,16 @@ checkAuth();
 }, []);
 
 async function handleSignOut() {
-await supabase.auth.signOut();
-window.location.href = "/admin/login";
+  const confirmed = window.confirm(
+    "Are you sure you want to sign out?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  await supabase.auth.signOut();
+  window.location.href = "/admin/login";
 }
 
 function handleChange(
