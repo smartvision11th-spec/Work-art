@@ -72,25 +72,35 @@ setArtworkError("");
 }
 
 useEffect(() => {
-async function checkAuth() {
-const {
-data: { session },
-} = await supabase.auth.getSession();
+  async function checkAuth() {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
+    if (!session) {
+      window.location.href = "/admin/login";
+      return;
+    }
 
-  if (!session) {
-    window.location.href = "/admin/login";
-    return;
+    const { data: adminUser, error } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    if (error || !adminUser) {
+      await supabase.auth.signOut();
+      window.location.href = "/admin/login";
+      return;
+    }
+
+    setAuthenticated(true);
+    setCheckingAuth(false);
+
+    await fetchArtworks();
   }
 
-  setAuthenticated(true);
-  setCheckingAuth(false);
-
-  await fetchArtworks();
-}
-
-checkAuth();
-
+  checkAuth();
 }, []);
 
 async function handleSignOut() {
