@@ -1,8 +1,44 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
+
+async function getAdminClient() {
+  const supabase = createSupabaseServerClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      supabase,
+      user: null,
+    };
+  }
+
+  const { data: adminUser, error: adminError } = await supabase
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (adminError || !adminUser) {
+    return {
+      supabase,
+      user: null,
+    };
+  }
+
+  return {
+    supabase,
+    user,
+  };
+}
 
 export async function GET(request: Request) {
   try {
+    const supabase = createSupabaseServerClient();
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
@@ -50,6 +86,15 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const { supabase, user } = await getAdminClient();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
 
     const {
@@ -121,6 +166,15 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    const { supabase, user } = await getAdminClient();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
@@ -170,6 +224,15 @@ export async function DELETE(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    const { supabase, user } = await getAdminClient();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
