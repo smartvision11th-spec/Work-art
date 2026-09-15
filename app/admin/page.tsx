@@ -29,6 +29,9 @@ image_url: "",
 };
 
 export default function Admin() {
+const [checkingAuth, setCheckingAuth] = useState(true);
+const [authenticated, setAuthenticated] = useState(false);
+
 const [showForm, setShowForm] = useState(false);
 
 const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -69,7 +72,25 @@ setArtworkError("");
 }
 
 useEffect(() => {
-fetchArtworks();
+async function checkAuth() {
+const {
+data: { session },
+} = await supabase.auth.getSession();
+
+
+  if (!session) {
+    window.location.href = "/admin/login";
+    return;
+  }
+
+  setAuthenticated(true);
+  setCheckingAuth(false);
+
+  await fetchArtworks();
+}
+
+checkAuth();
+
 }, []);
 
 async function handleSignOut() {
@@ -147,6 +168,7 @@ const file = e.target.files?.[0];
 
 function handleEdit(artwork: Artwork) {
 setEditingId(artwork.id);
+
 
 setForm({
   title: artwork.title,
@@ -236,13 +258,13 @@ try {
   setSaving(false);
 }
 
-
 }
 
 async function handleDelete(id: string, title: string) {
 const confirmed = window.confirm(
 `Delete "${title}"? This action cannot be undone.`
 );
+
 
 if (!confirmed) {
   return;
@@ -272,6 +294,16 @@ try {
   setDeletingId(null);
 }
 
+
+}
+
+if (checkingAuth) {
+return ( <section className="section"> <p>Checking admin access...</p> </section>
+);
+}
+
+if (!authenticated) {
+return null;
 }
 
 return ( <section className="section"> <p className="eyebrow">ADMIN PANEL</p>
@@ -540,7 +572,6 @@ return ( <section className="section"> <p className="eyebrow">ADMIN PANEL</p>
     {message && !showForm && <p>{message}</p>}
   </div>
 </section>
-
 
 );
 }
