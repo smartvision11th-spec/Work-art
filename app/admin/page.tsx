@@ -419,20 +419,114 @@ export default function Admin() {
     }
 
     return items.map((item: any, index: number) => {
+      const artworkId = item.id;
+      const image = item.image;
       const title =
         item.title ||
         item.name ||
         item.artwork_title ||
         "Artwork";
-
+      const artist = item.artist || "";
       const quantity =
         item.quantity ||
         item.qty ||
         1;
 
       return (
-        <div key={index}>
-          {title} × {quantity}
+        <div
+          key={index}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "12px",
+          }}
+        >
+          {artworkId ? (
+            <a
+              href={`/artwork/${artworkId}`}
+              style={{
+                display: "block",
+                flexShrink: 0,
+              }}
+            >
+              {image ? (
+                <img
+                  src={image}
+                  alt={title}
+                  style={{
+                    width: "70px",
+                    height: "70px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "70px",
+                    height: "70px",
+                    borderRadius: "8px",
+                    background: "#eee",
+                  }}
+                />
+              )}
+            </a>
+          ) : (
+            image && (
+              <img
+                src={image}
+                alt={title}
+                style={{
+                  width: "70px",
+                  height: "70px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+              />
+            )
+          )}
+
+          <div>
+            {artworkId ? (
+              <a
+                href={`/artwork/${artworkId}`}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  fontWeight: 600,
+                }}
+              >
+                {title}
+              </a>
+            ) : (
+              <div style={{ fontWeight: 600 }}>
+                {title}
+              </div>
+            )}
+
+            {artist && (
+              <div
+                style={{
+                  fontSize: "14px",
+                  opacity: 0.7,
+                  marginTop: "3px",
+                }}
+              >
+                {artist}
+              </div>
+            )}
+
+            <div
+              style={{
+                fontSize: "14px",
+                marginTop: "3px",
+              }}
+            >
+              Quantity: {quantity}
+            </div>
+          </div>
         </div>
       );
     });
