@@ -188,15 +188,17 @@ export default function Home() {
         </p>
 
         <div
+          className="editorialWorks"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1.15fr 0.85fr",
             gap: "32px",
             marginTop: "65px",
           }}
         >
           {artworks[0] && (
-            <Link href={`/artwork/${artworks[0].id}`} style={{ display: "block" }}>
+            <Link
+              href={`/artwork/${artworks[0].id}`}
+              style={{ display: "block" }}
+            >
               <div
                 style={{
                   position: "relative",
@@ -326,11 +328,10 @@ export default function Home() {
         }}
       >
         <div
+          className="artistStoryGrid"
           style={{
             maxWidth: "1440px",
             margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "0.8fr 1.2fr",
             gap: "8vw",
             alignItems: "center",
           }}
@@ -433,11 +434,10 @@ export default function Home() {
         }}
       >
         <div
+          className="customArtGrid"
           style={{
             maxWidth: "1440px",
             margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "1fr 0.75fr",
             gap: "8vw",
             alignItems: "center",
           }}
@@ -625,11 +625,9 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Social cards */}
           <div
+            className="socialGrid"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
               gap: "20px",
               marginTop: "60px",
             }}
