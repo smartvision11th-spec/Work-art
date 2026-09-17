@@ -14,22 +14,73 @@ export default function Home() {
           <p className="eyebrow">ARTIST · DIPALI SINGH</p>
 
           <h1>
-            Art that makes
+            Art that
             <br />
-            <em>space feel alive.</em>
+            <em>feels personal.</em>
           </h1>
 
           <p className="heroText">
-            Explore original artwork by Dipali Singh, created to bring
-            character, emotion, and individuality into your space.
+            Original paintings created with emotion, character, and a sense
+            of place.
           </p>
 
-          <Link className="button" href="/shop">
-            Explore artwork
-          </Link>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "22px",
+              marginTop: "8px",
+            }}
+          >
+            <Link className="button" href="/shop">
+              Explore artwork
+            </Link>
+
+            <Link
+              href="/about"
+              style={{
+                fontSize: "10px",
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                borderBottom: "1px solid currentColor",
+                paddingBottom: "5px",
+              }}
+            >
+              Meet the artist
+            </Link>
+          </div>
+
+          <p
+            style={{
+              marginTop: "70px",
+              fontSize: "9px",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--muted)",
+            }}
+          >
+            Original works · Custom artwork · Worldwide
+          </p>
         </div>
 
         <div className="heroArt">
+          <div
+            style={{
+              position: "absolute",
+              top: "28px",
+              left: "28px",
+              zIndex: 3,
+              padding: "9px 12px",
+              background: "rgba(247,243,238,0.82)",
+              backdropFilter: "blur(10px)",
+              fontSize: "9px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            Featured work
+          </div>
+
           <Image
             src={heroArtwork.image}
             alt={heroArtwork.title}
@@ -37,6 +88,53 @@ export default function Home() {
             priority
             sizes="(max-width: 1000px) 100vw, 55vw"
           />
+
+          <div
+            style={{
+              position: "absolute",
+              bottom: "25px",
+              left: "25px",
+              right: "25px",
+              zIndex: 3,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              gap: "20px",
+              color: "white",
+              textShadow: "0 1px 8px rgba(0,0,0,0.35)",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "22px",
+                }}
+              >
+                {heroArtwork.title}
+              </div>
+
+              <div
+                style={{
+                  marginTop: "5px",
+                  fontSize: "9px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {heroArtwork.category}
+              </div>
+            </div>
+
+            <span
+              style={{
+                fontSize: "10px",
+                letterSpacing: "0.1em",
+              }}
+            >
+              01 / 01
+            </span>
+          </div>
         </div>
       </section>
 
@@ -53,7 +151,7 @@ export default function Home() {
 
           <p className="muted">
             Discover paintings created with an emphasis on expression,
-            atmosphere, and the small details that make a piece feel personal.
+            atmosphere, and the details that make a piece feel personal.
           </p>
         </div>
 
@@ -70,7 +168,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ARTIST / STORY */}
+      {/* ARTIST */}
       <section className="dark">
         <p className="eyebrow">THE ARTIST</p>
 
@@ -107,7 +205,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CUSTOM ARTWORK */}
+      {/* CUSTOM ART */}
       <section className="section pinkSection">
         <p className="eyebrow">MADE FOR YOU</p>
 
@@ -135,7 +233,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SOCIAL / FINAL CTA */}
+      {/* SOCIAL */}
       <section className="section">
         <p className="eyebrow">FOLLOW THE ART</p>
 
