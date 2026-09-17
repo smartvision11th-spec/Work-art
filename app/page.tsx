@@ -6,6 +6,7 @@ import { ArtworkCard } from "@/components/ArtworkCard";
 export default function Home() {
   const heroArtwork = artworks[0];
   const storyArtwork = artworks[1] || artworks[0];
+  const customArtwork = artworks[2] || artworks[0];
 
   return (
     <>
@@ -334,7 +335,6 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          {/* Artwork */}
           <div
             style={{
               position: "relative",
@@ -380,7 +380,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Story */}
           <div>
             <p className="eyebrow">02 / THE ARTIST</p>
 
@@ -424,30 +423,165 @@ export default function Home() {
       </section>
 
       {/* CUSTOM ART */}
-      <section className="section pinkSection">
-        <p className="eyebrow">03 / MADE FOR YOU</p>
-
-        <h2>
-          Your idea,
-          <br />
-          <em>turned into art.</em>
-        </h2>
-
-        <p
-          className="muted"
+      <section
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          padding: "150px 5vw",
+          background:
+            "linear-gradient(135deg, #f4dddd 0%, #e8b8bd 45%, #d99aaa 100%)",
+        }}
+      >
+        <div
           style={{
-            maxWidth: "520px",
-            marginTop: "25px",
+            maxWidth: "1440px",
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "1fr 0.75fr",
+            gap: "8vw",
+            alignItems: "center",
           }}
         >
-          Have something personal in mind? Dipali also creates custom
-          artworks made around your idea, space, or story.
-        </p>
+          {/* TEXT */}
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <p className="eyebrow">03 / CUSTOM ARTWORK</p>
 
-        <div style={{ marginTop: "35px" }}>
-          <Link className="button" href="/commission">
-            Create your artwork →
-          </Link>
+            <h2
+              style={{
+                fontSize: "clamp(58px, 8vw, 110px)",
+                maxWidth: "850px",
+                marginTop: "25px",
+              }}
+            >
+              Your idea.
+              <br />
+              <em>Her art.</em>
+            </h2>
+
+            <p
+              style={{
+                maxWidth: "500px",
+                lineHeight: "1.9",
+                marginTop: "30px",
+                color: "rgba(25,23,21,0.68)",
+              }}
+            >
+              Have a personal idea, memory, portrait, or vision you want
+              turned into artwork? Dipali creates custom pieces around your
+              concept.
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "25px",
+                flexWrap: "wrap",
+                marginTop: "40px",
+              }}
+            >
+              <Link
+                className="button"
+                href="/commission"
+                style={{
+                  background: "var(--charcoal)",
+                  color: "var(--ivory)",
+                  borderColor: "var(--charcoal)",
+                }}
+              >
+                Create your artwork →
+              </Link>
+
+              <span
+                style={{
+                  fontSize: "9px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "rgba(25,23,21,0.58)",
+                }}
+              >
+                Made personally by Dipali Singh
+              </span>
+            </div>
+          </div>
+
+          {/* ARTWORK */}
+          <div
+            style={{
+              position: "relative",
+              minHeight: "600px",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                width: "75%",
+                height: "75%",
+                top: "10%",
+                right: "5%",
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.18)",
+                filter: "blur(2px)",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                width: "65%",
+                aspectRatio: "4 / 5",
+                top: "5%",
+                right: "8%",
+                transform: "rotate(4deg)",
+                background: "var(--ivory-soft)",
+                padding: "14px",
+                boxShadow: "0 25px 70px rgba(72,39,44,0.16)",
+              }}
+            >
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                <Image
+                  src={customArtwork.image}
+                  alt={customArtwork.title}
+                  fill
+                  sizes="(max-width: 900px) 65vw, 30vw"
+                  style={{
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div
+              style={{
+                position: "absolute",
+                bottom: "7%",
+                left: "4%",
+                width: "125px",
+                height: "125px",
+                borderRadius: "50%",
+                background: "rgba(247,243,238,0.82)",
+                backdropFilter: "blur(10px)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                fontSize: "9px",
+                letterSpacing: "0.1em",
+                lineHeight: "1.5",
+                textTransform: "uppercase",
+              }}
+            >
+              Made
+              <br />
+              for you
+            </div>
+          </div>
         </div>
       </section>
 
