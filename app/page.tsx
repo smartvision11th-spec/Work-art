@@ -140,30 +140,190 @@ export default function Home() {
 
       {/* SELECTED WORKS */}
       <section className="section">
-        <div className="sectionIntro">
-          <p className="eyebrow">SELECTED WORKS</p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            gap: "30px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div className="sectionIntro">
+            <p className="eyebrow">01 / SELECTED WORKS</p>
 
-          <h2>
-            A collection of
-            <br />
-            <em>original pieces.</em>
-          </h2>
+            <h2>
+              Pieces with
+              <br />
+              <em>something to say.</em>
+            </h2>
+          </div>
 
-          <p className="muted">
-            Discover paintings created with an emphasis on expression,
-            atmosphere, and the details that make a piece feel personal.
-          </p>
+          <Link
+            href="/shop"
+            style={{
+              fontSize: "10px",
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              borderBottom: "1px solid currentColor",
+              paddingBottom: "6px",
+              marginBottom: "12px",
+            }}
+          >
+            View collection →
+          </Link>
         </div>
 
-        <div className="grid">
-          {artworks.slice(0, 4).map((artwork) => (
-            <ArtworkCard key={artwork.id} artwork={artwork} />
-          ))}
+        <p
+          className="muted"
+          style={{
+            maxWidth: "560px",
+            marginTop: "25px",
+          }}
+        >
+          A selection of original works created by Dipali Singh, each with its
+          own atmosphere, story, and character.
+        </p>
+
+        {/* Editorial artwork layout */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.15fr 0.85fr",
+            gap: "32px",
+            marginTop: "65px",
+          }}
+        >
+          {artworks[0] && (
+            <Link
+              href={`/artwork/${artworks[0].id}`}
+              style={{
+                display: "block",
+              }}
+            >
+              <div
+                style={{
+                  position: "relative",
+                  aspectRatio: "4 / 5",
+                  overflow: "hidden",
+                  background: "#e1d9d1",
+                }}
+              >
+                <Image
+                  src={artworks[0].image}
+                  alt={artworks[0].title}
+                  fill
+                  sizes="(max-width: 700px) 100vw, 55vw"
+                  style={{
+                    objectFit: "cover",
+                    transition: "transform 0.8s ease",
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: "20px",
+                  paddingTop: "14px",
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontFamily: "Georgia, serif",
+                      fontSize: "19px",
+                    }}
+                  >
+                    {artworks[0].title}
+                  </div>
+
+                  <small className="muted">
+                    {artworks[0].category}
+                  </small>
+                </div>
+
+                <span style={{ fontSize: "11px" }}>
+                  ₹{artworks[0].price.toLocaleString("en-IN")}
+                </span>
+              </div>
+            </Link>
+          )}
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "24px",
+              alignContent: "start",
+              paddingTop: "90px",
+            }}
+          >
+            {artworks.slice(1, 4).map((artwork) => (
+              <Link
+                key={artwork.id}
+                href={`/artwork/${artwork.id}`}
+                style={{
+                  display: "block",
+                }}
+              >
+                <div
+                  style={{
+                    position: "relative",
+                    aspectRatio: "3 / 4",
+                    overflow: "hidden",
+                    background: "#e1d9d1",
+                  }}
+                >
+                  <Image
+                    src={artwork.image}
+                    alt={artwork.title}
+                    fill
+                    sizes="(max-width: 700px) 50vw, 25vw"
+                    style={{
+                      objectFit: "cover",
+                      transition: "transform 0.8s ease",
+                    }}
+                  />
+                </div>
+
+                <div style={{ paddingTop: "10px" }}>
+                  <div
+                    style={{
+                      fontFamily: "Georgia, serif",
+                      fontSize: "15px",
+                    }}
+                  >
+                    {artwork.title}
+                  </div>
+
+                  <small className="muted">
+                    {artwork.category}
+                  </small>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <div style={{ marginTop: "45px" }}>
+        <div
+          style={{
+            marginTop: "65px",
+            paddingTop: "25px",
+            borderTop: "1px solid var(--border)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <span className="muted" style={{ fontSize: "10px" }}>
+            ORIGINAL WORKS · DIPALI SINGH
+          </span>
+
           <Link className="button" href="/shop">
-            View full collection
+            Explore all artwork
           </Link>
         </div>
       </section>
