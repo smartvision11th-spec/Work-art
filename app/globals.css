@@ -670,3 +670,59 @@ select:focus {
     padding: 14px 20px;
   }
 }
+/* =========================
+   HOMEPAGE RESPONSIVE GRIDS
+========================= */
+
+.editorialWorks {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+}
+
+.artistStoryGrid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+}
+
+.customArtGrid {
+  display: grid;
+  grid-template-columns: 1fr 0.75fr;
+}
+
+.socialGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+  .editorialWorks {
+    grid-template-columns: 1fr;
+  }
+
+  .artistStoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .customArtGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .socialGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .editorialWorks {
+    gap: 35px !important;
+  }
+
+  .artistStoryGrid,
+  .customArtGrid {
+    gap: 50px !important;
+  }
+
+  .socialGrid {
+    grid-template-columns: 1fr;
+  }
+}
