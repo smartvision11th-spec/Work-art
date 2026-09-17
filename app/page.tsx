@@ -442,7 +442,6 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          {/* TEXT */}
           <div style={{ position: "relative", zIndex: 2 }}>
             <p className="eyebrow">03 / CUSTOM ARTWORK</p>
 
@@ -505,7 +504,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* ARTWORK */}
           <div
             style={{
               position: "relative",
@@ -521,7 +519,6 @@ export default function Home() {
                 right: "5%",
                 borderRadius: "50%",
                 background: "rgba(255,255,255,0.18)",
-                filter: "blur(2px)",
               }}
             />
 
@@ -585,44 +582,226 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SOCIAL */}
-      <section className="section">
-        <p className="eyebrow">04 / FOLLOW THE ART</p>
+      {/* SOCIAL STUDIO */}
+      <section
+        style={{
+          padding: "130px 5vw 110px",
+          background: "var(--ivory)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1440px",
+            margin: "0 auto",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              gap: "30px",
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <p className="eyebrow">04 / THE STUDIO</p>
 
-        <h2>
-          From the studio
-          <br />
-          <em>to your space.</em>
-        </h2>
+              <h2>
+                Follow the
+                <br />
+                <em>creative process.</em>
+              </h2>
+            </div>
 
-        <p className="muted" style={{ maxWidth: "520px" }}>
-          Follow Dipali Singh on social media to discover new artwork,
-          studio moments, and upcoming pieces.
-        </p>
+            <p
+              className="muted"
+              style={{
+                maxWidth: "420px",
+                marginBottom: "10px",
+              }}
+            >
+              New artwork, studio moments, and glimpses behind the work.
+            </p>
+          </div>
 
-        <div style={{ marginTop: "35px" }}>
-          <Link className="button" href="/about">
-            Discover more
-          </Link>
+          {/* Social cards */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "20px",
+              marginTop: "60px",
+            }}
+          >
+            <div
+              style={{
+                padding: "40px 30px",
+                minHeight: "180px",
+                border: "1px solid var(--border)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "28px",
+                }}
+              >
+                Instagram
+              </span>
+
+              <span
+                className="muted"
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Social link coming here →
+              </span>
+            </div>
+
+            <div
+              style={{
+                padding: "40px 30px",
+                minHeight: "180px",
+                border: "1px solid var(--border)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "28px",
+                }}
+              >
+                WhatsApp
+              </span>
+
+              <Link
+                href="/commission"
+                className="muted"
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Custom artwork enquiries →
+              </Link>
+            </div>
+
+            <div
+              style={{
+                padding: "40px 30px",
+                minHeight: "180px",
+                border: "1px solid var(--border)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "Georgia, serif",
+                  fontSize: "28px",
+                }}
+              >
+                About
+              </span>
+
+              <Link
+                href="/about"
+                className="muted"
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Meet Dipali Singh →
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* FOOTER */}
       <footer
         style={{
-          padding: "35px 5vw",
-          borderTop: "1px solid rgba(25,23,21,0.1)",
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "20px",
-          flexWrap: "wrap",
-          fontSize: "10px",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
+          padding: "45px 5vw",
+          background: "var(--charcoal)",
+          color: "var(--ivory)",
         }}
       >
-        <span>ARTIST DIPALI SINGH</span>
-        <span>Original artwork · Custom creations</span>
+        <div
+          style={{
+            maxWidth: "1440px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "30px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontFamily: "Georgia, serif",
+                fontSize: "24px",
+              }}
+            >
+              Dipali Singh
+            </div>
+
+            <div
+              style={{
+                marginTop: "8px",
+                fontSize: "9px",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "#aaa39d",
+              }}
+            >
+              Artist · Original artwork · Custom creations
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "25px",
+              alignItems: "center",
+              fontSize: "9px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            <Link href="/shop">Gallery</Link>
+            <Link href="/about">About</Link>
+            <Link href="/commission">Custom Art</Link>
+          </div>
+        </div>
+
+        <div
+          style={{
+            maxWidth: "1440px",
+            margin: "40px auto 0",
+            paddingTop: "20px",
+            borderTop: "1px solid rgba(247,243,238,0.15)",
+            fontSize: "8px",
+            letterSpacing: "0.1em",
+            color: "#77716b",
+          }}
+        >
+          © {new Date().getFullYear()} DIPALI SINGH · ALL RIGHTS RESERVED
+        </div>
       </footer>
     </>
   );
