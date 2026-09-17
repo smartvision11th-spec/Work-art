@@ -5,6 +5,7 @@ import { ArtworkCard } from "@/components/ArtworkCard";
 
 export default function Home() {
   const heroArtwork = artworks[0];
+  const storyArtwork = artworks[1] || artworks[0];
 
   return (
     <>
@@ -185,7 +186,6 @@ export default function Home() {
           own atmosphere, story, and character.
         </p>
 
-        {/* Editorial artwork layout */}
         <div
           style={{
             display: "grid",
@@ -195,12 +195,7 @@ export default function Home() {
           }}
         >
           {artworks[0] && (
-            <Link
-              href={`/artwork/${artworks[0].id}`}
-              style={{
-                display: "block",
-              }}
-            >
+            <Link href={`/artwork/${artworks[0].id}`} style={{ display: "block" }}>
               <div
                 style={{
                   position: "relative",
@@ -239,9 +234,7 @@ export default function Home() {
                     {artworks[0].title}
                   </div>
 
-                  <small className="muted">
-                    {artworks[0].category}
-                  </small>
+                  <small className="muted">{artworks[0].category}</small>
                 </div>
 
                 <span style={{ fontSize: "11px" }}>
@@ -264,9 +257,7 @@ export default function Home() {
               <Link
                 key={artwork.id}
                 href={`/artwork/${artwork.id}`}
-                style={{
-                  display: "block",
-                }}
+                style={{ display: "block" }}
               >
                 <div
                   style={{
@@ -298,9 +289,7 @@ export default function Home() {
                     {artwork.title}
                   </div>
 
-                  <small className="muted">
-                    {artwork.category}
-                  </small>
+                  <small className="muted">{artwork.category}</small>
                 </div>
               </Link>
             ))}
@@ -328,46 +317,115 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ARTIST */}
-      <section className="dark">
-        <p className="eyebrow">THE ARTIST</p>
-
-        <h2>
-          Art is not just
-          <br />
-          something to <em>look at.</em>
-        </h2>
-
-        <p
-          className="muted"
+      {/* ARTIST STORY */}
+      <section
+        style={{
+          background: "var(--ivory-soft)",
+          padding: "140px 5vw",
+        }}
+      >
+        <div
           style={{
-            maxWidth: "520px",
-            marginTop: "30px",
+            maxWidth: "1440px",
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "0.8fr 1.2fr",
+            gap: "8vw",
+            alignItems: "center",
           }}
         >
-          Every artwork carries a mood, a memory, or an idea. Dipali Singh
-          creates pieces that are meant to become part of the spaces and
-          stories they enter.
-        </p>
-
-        <div style={{ marginTop: "40px" }}>
-          <Link
-            className="button"
-            href="/about"
+          {/* Artwork */}
+          <div
             style={{
-              background: "transparent",
-              color: "inherit",
-              borderColor: "rgba(247,243,238,0.35)",
+              position: "relative",
+              aspectRatio: "4 / 5",
+              maxWidth: "520px",
+              margin: "0 auto",
+              width: "100%",
             }}
           >
-            Meet the artist
-          </Link>
+            <Image
+              src={storyArtwork.image}
+              alt={storyArtwork.title}
+              fill
+              sizes="(max-width: 900px) 90vw, 35vw"
+              style={{
+                objectFit: "cover",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-24px",
+                right: "-24px",
+                width: "130px",
+                height: "130px",
+                borderRadius: "50%",
+                background: "var(--blush)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "20px",
+                fontSize: "9px",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                lineHeight: "1.5",
+              }}
+            >
+              Original
+              <br />
+              artwork
+            </div>
+          </div>
+
+          {/* Story */}
+          <div>
+            <p className="eyebrow">02 / THE ARTIST</p>
+
+            <h2>
+              Art begins
+              <br />
+              with a <em>feeling.</em>
+            </h2>
+
+            <p
+              style={{
+                maxWidth: "560px",
+                color: "var(--muted)",
+                lineHeight: "1.9",
+                marginTop: "30px",
+              }}
+            >
+              Dipali Singh creates original artwork with a focus on
+              expression, atmosphere, and individuality.
+            </p>
+
+            <p
+              style={{
+                maxWidth: "560px",
+                color: "var(--muted)",
+                lineHeight: "1.9",
+                marginTop: "18px",
+              }}
+            >
+              Each piece is created to exist beyond the screen, becoming part
+              of the room, memory, or story that surrounds it.
+            </p>
+
+            <div style={{ marginTop: "40px" }}>
+              <Link className="button" href="/about">
+                About Dipali Singh
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* CUSTOM ART */}
       <section className="section pinkSection">
-        <p className="eyebrow">MADE FOR YOU</p>
+        <p className="eyebrow">03 / MADE FOR YOU</p>
 
         <h2>
           Your idea,
@@ -395,7 +453,7 @@ export default function Home() {
 
       {/* SOCIAL */}
       <section className="section">
-        <p className="eyebrow">FOLLOW THE ART</p>
+        <p className="eyebrow">04 / FOLLOW THE ART</p>
 
         <h2>
           From the studio
