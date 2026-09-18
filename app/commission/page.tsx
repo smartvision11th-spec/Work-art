@@ -9,10 +9,9 @@ export default function CommissionPage() {
     <main>
       {/* HERO */}
       <section
+        className="commissionHero"
         style={{
           minHeight: "calc(100vh - 78px)",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
           alignItems: "center",
           gap: "7vw",
           maxWidth: "1440px",
@@ -59,10 +58,7 @@ export default function CommissionPage() {
               marginTop: "40px",
             }}
           >
-            <a
-              href="#contact"
-              className="button"
-            >
+            <a href="#contact" className="button">
               Start your artwork →
             </a>
 
@@ -173,9 +169,8 @@ export default function CommissionPage() {
         </h2>
 
         <div
+          className="commissionIdeas"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
             gap: "20px",
             marginTop: "60px",
           }}
@@ -277,9 +272,8 @@ export default function CommissionPage() {
           </h2>
 
           <div
+            className="commissionProcess"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
               gap: "25px",
             }}
           >
@@ -351,9 +345,8 @@ export default function CommissionPage() {
       {/* FEATURED ARTWORK */}
       <section className="section">
         <div
+          className="commissionFeatured"
           style={{
-            display: "grid",
-            gridTemplateColumns: "0.9fr 1.1fr",
             gap: "8vw",
             alignItems: "center",
           }}
