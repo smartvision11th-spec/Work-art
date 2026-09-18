@@ -51,92 +51,110 @@ export default function Cart() {
   if (!loaded) {
     return (
       <section className="section">
-        <p>Loading bag...</p>
+        <p className="muted">Loading bag...</p>
       </section>
     );
   }
 
   return (
-    <section className="section">
-      <p className="eyebrow">YOUR SELECTION</p>
+    <main>
+      <section className="section cartPage">
+        <p className="eyebrow">YOUR SELECTION</p>
 
-      <h1>Shopping bag</h1>
+        <h1>
+          Your
+          <br />
+          <em>bag.</em>
+        </h1>
 
-      {cart.length === 0 ? (
-        <div>
-          <p className="muted">
-            Your bag is currently empty.
-          </p>
-
-          <Link className="button" href="/shop">
-            Explore collection
-          </Link>
-        </div>
-      ) : (
-        <div>
-          {cart.map((item) => (
-            <div
-              key={item.id}
-              className="adminArtwork"
-            >
-              <div>
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  style={{
-                    width: "160px",
-                    height: "160px",
-                    objectFit: "cover",
-                    display: "block",
-                    marginBottom: "12px",
-                    borderRadius: "8px",
-                  }}
-                />
-
-                <h3>{item.title}</h3>
-
-                <p className="muted">
-                  By {item.artist}
-                </p>
-
-                <p>
-                  ₹{item.price.toLocaleString("en-IN")}
-                </p>
-              </div>
-
-              <div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    removeFromCart(item.id)
-                  }
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
-
-          <div style={{ marginTop: "30px" }}>
-            <h2>
-              Total: ₹{total.toLocaleString("en-IN")}
-            </h2>
+        {cart.length === 0 ? (
+          <div className="emptyCart">
+            <p className="muted">
+              Your bag is currently empty.
+            </p>
 
             <Link
               className="button"
-              href="/checkout"
+              href="/shop"
             >
-              Proceed to Checkout
+              Explore Collection
             </Link>
           </div>
+        ) : (
+          <div className="cartLayout">
+            {/* ITEMS */}
+            <div className="cartItems">
+              {cart.map((item) => (
+                <article
+                  key={item.id}
+                  className="cartItem"
+                >
+                  <Link
+                    href={`/artwork/${item.id}`}
+                    className="cartItemImage"
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                    />
+                  </Link>
 
-          <div style={{ marginTop: "20px" }}>
-            <Link href="/shop">
-              ← Continue shopping
-            </Link>
+                  <div className="cartItemInfo">
+                    <div>
+                      <p className="eyebrow">
+                        {item.artist}
+                      </p>
+
+                      <h2>{item.title}</h2>
+
+                      <p className="cartPrice">
+                        ₹{item.price.toLocaleString("en-IN")}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="removeButton"
+                      onClick={() =>
+                        removeFromCart(item.id)
+                      }
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {/* SUMMARY */}
+            <aside className="cartSummary">
+              <p className="eyebrow">ORDER SUMMARY</p>
+
+              <div className="cartTotal">
+                <span>Total</span>
+
+                <strong>
+                  ₹{total.toLocaleString("en-IN")}
+                </strong>
+              </div>
+
+              <Link
+                className="button cartCheckout"
+                href="/checkout"
+              >
+                Proceed to Checkout
+              </Link>
+
+              <Link
+                className="continueShopping"
+                href="/shop"
+              >
+                ← Continue shopping
+              </Link>
+            </aside>
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+    </main>
   );
 }
