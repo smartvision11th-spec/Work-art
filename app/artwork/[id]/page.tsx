@@ -94,7 +94,7 @@ export default function Page() {
   if (loading) {
     return (
       <section className="section">
-        <p>Loading artwork...</p>
+        <p className="muted">Loading artwork...</p>
       </section>
     );
   }
@@ -102,76 +102,162 @@ export default function Page() {
   if (!artwork) {
     return (
       <section className="section">
-        <h1>Artwork not found</h1>
+        <p className="eyebrow">COLLECTION</p>
 
-        <Link href="/shop">
-          ← Back to collection
+        <h1>
+          Artwork
+          <br />
+          not found.
+        </h1>
+
+        <Link className="button" href="/shop">
+          Back to collection
         </Link>
       </section>
     );
   }
 
   return (
-    <section className="section detail">
-      <Link href="/shop">
-        ← Back to collection
-      </Link>
+    <main>
+      <section className="detail">
+        <Link
+          href="/shop"
+          style={{
+            fontSize: "10px",
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+          }}
+        >
+          ← Back to collection
+        </Link>
 
-      <div className="detailGrid">
-        <div className="detailImage">
-          <img
-            src={artwork.image_url}
-            alt={artwork.title}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-        </div>
-
-        <div>
-          <p className="eyebrow">
-            {artwork.category}
-          </p>
-
-          <h1>{artwork.title}</h1>
-
-          <p>By {artwork.artist}</p>
-
-          <h3>
-            ₹{artwork.price.toLocaleString("en-IN")}
-          </h3>
-
-          <p className="muted">
-            {artwork.description}
-          </p>
-
-          <div className="specs">
-            <span>
-              Medium: {artwork.medium}
-            </span>
-
-            <span>
-              Size: {artwork.size}
-            </span>
-
-            <span>
-              Edition: {artwork.edition}
-            </span>
+        <div className="detailGrid">
+          {/* ARTWORK IMAGE */}
+          <div className="detailImage">
+            <img
+              src={artwork.image_url}
+              alt={artwork.title}
+            />
           </div>
 
-          <button
-            className="button"
-            type="button"
-            onClick={addToBag}
-          >
-            Add to bag
-          </button>
+          {/* ARTWORK INFORMATION */}
+          <div className="detailInfo">
+            <p className="eyebrow">
+              {artwork.category}
+            </p>
 
-          {message && <p>{message}</p>}
+            <h1>{artwork.title}</h1>
+
+            <p
+              style={{
+                marginTop: "-5px",
+                marginBottom: "35px",
+              }}
+            >
+              By {artwork.artist}
+            </p>
+
+            <p
+              style={{
+                fontFamily:
+                  'Georgia, "Times New Roman", serif',
+                fontSize: "24px",
+                marginBottom: "35px",
+              }}
+            >
+              ₹{artwork.price.toLocaleString("en-IN")}
+            </p>
+
+            <p
+              className="muted"
+              style={{
+                maxWidth: "500px",
+                lineHeight: 1.9,
+              }}
+            >
+              {artwork.description}
+            </p>
+
+            <div className="specs">
+              <div>
+                <span className="specLabel">
+                  Medium
+                </span>
+                <span>{artwork.medium}</span>
+              </div>
+
+              <div>
+                <span className="specLabel">
+                  Size
+                </span>
+                <span>{artwork.size}</span>
+              </div>
+
+              <div>
+                <span className="specLabel">
+                  Edition
+                </span>
+                <span>{artwork.edition}</span>
+              </div>
+            </div>
+
+            <button
+              className="button"
+              type="button"
+              onClick={addToBag}
+            >
+              Add to bag
+            </button>
+
+            {message && (
+              <p
+                style={{
+                  marginTop: "15px",
+                  fontSize: "11px",
+                  color: "var(--muted)",
+                }}
+              >
+                {message}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* CUSTOM ART CTA */}
+      <section className="pinkSection">
+        <div className="section">
+          <p className="eyebrow">LOOKING FOR SOMETHING ELSE?</p>
+
+          <h2
+            style={{
+              maxWidth: "800px",
+            }}
+          >
+            Create something
+            <br />
+            <em>personal.</em>
+          </h2>
+
+          <p
+            className="muted"
+            style={{
+              maxWidth: "520px",
+              marginBottom: "35px",
+            }}
+          >
+            Dipali also creates custom artwork based on
+            your ideas, memories, references, or space.
+          </p>
+
+          <Link
+            className="button"
+            href="/commission"
+          >
+            Explore Custom Art
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }
