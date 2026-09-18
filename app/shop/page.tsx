@@ -48,21 +48,109 @@ export default function Shop() {
   }, []);
 
   return (
-    <section className="section">
-      <p className="eyebrow">THE COLLECTION</p>
-      <h1>All works</h1>
+    <main>
+      {/* GALLERY HERO */}
+      <section
+        className="section"
+        style={{
+          paddingBottom: "70px",
+        }}
+      >
+        <p className="eyebrow">THE COLLECTION</p>
 
-      {loading && <p>Loading artworks...</p>}
+        <h1>
+          Original
+          <br />
+          <em>works.</em>
+        </h1>
 
-      {error && <p>{error}</p>}
+        <p
+          className="muted"
+          style={{
+            maxWidth: "560px",
+            marginTop: "30px",
+          }}
+        >
+          Explore Dipali Singh's collection of original artworks, created to
+          bring emotion, character, and a sense of individuality into your
+          space.
+        </p>
+      </section>
 
-      {!loading && !error && (
-        <div className="grid">
-          {artworks.map((artwork) => (
-            <ArtworkCard key={artwork.id} artwork={artwork} />
-          ))}
+      {/* COLLECTION */}
+      <section
+        className="section"
+        style={{
+          paddingTop: "20px",
+        }}
+      >
+        {loading && (
+          <p className="muted">
+            Loading the collection...
+          </p>
+        )}
+
+        {error && (
+          <p className="muted">
+            {error}
+          </p>
+        )}
+
+        {!loading && !error && artworks.length === 0 && (
+          <p className="muted">
+            No artworks are currently available.
+          </p>
+        )}
+
+        {!loading && !error && artworks.length > 0 && (
+          <div className="grid">
+            {artworks.map((artwork) => (
+              <ArtworkCard
+                key={artwork.id}
+                artwork={artwork}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* CUSTOM ART CTA */}
+      <section className="pinkSection">
+        <div
+          className="section"
+          style={{
+            paddingTop: "120px",
+            paddingBottom: "120px",
+          }}
+        >
+          <p className="eyebrow">SOMETHING PERSONAL</p>
+
+          <h2
+            style={{
+              maxWidth: "800px",
+            }}
+          >
+            Looking for something
+            <br />
+            <em>made for you?</em>
+          </h2>
+
+          <p
+            className="muted"
+            style={{
+              maxWidth: "520px",
+              marginBottom: "35px",
+            }}
+          >
+            Dipali also creates custom artwork based on your ideas,
+            references, memories, or the atmosphere you want.
+          </p>
+
+          <a className="button" href="/commission">
+            Explore Custom Art
+          </a>
         </div>
-      )}
-    </section>
+      </section>
+    </main>
   );
 }
