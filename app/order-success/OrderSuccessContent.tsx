@@ -8,31 +8,74 @@ export default function OrderSuccessContent() {
   const orderId = searchParams.get("id");
 
   return (
-    <section className="section">
-      <p className="eyebrow">ORDER CONFIRMED</p>
+    <main>
+      <section className="orderSuccess">
+        <div className="orderSuccessInner">
+          <p className="eyebrow">ORDER CONFIRMED</p>
 
-      <h1>Thank you for your order.</h1>
+          <div className="orderSuccessMark">
+            ✓
+          </div>
 
-      <p className="muted">
-        Your COD order has been placed successfully.
-      </p>
+          <h1>
+            Thank you for<br />
+            your <em>order.</em>
+          </h1>
 
-      {orderId && (
-        <p>
-          <strong>Order ID:</strong> {orderId}
-        </p>
-      )}
+          <p className="orderSuccessLead">
+            Your artwork has been reserved successfully.
+          </p>
 
-      <p className="muted">
-        We will contact you using the phone number provided
-        during checkout to confirm the delivery details.
-      </p>
+          {orderId && (
+            <div className="orderIdBox">
+              <span>ORDER ID</span>
+              <strong>{orderId}</strong>
+            </div>
+          )}
 
-      <div style={{ marginTop: "24px" }}>
-        <Link className="button" href="/shop">
-          Continue exploring
-        </Link>
-      </div>
-    </section>
+          <div className="orderSuccessMessage">
+            <p>
+              We will contact you using the phone number provided
+              during checkout to confirm your delivery details.
+            </p>
+
+            <p>
+              Your order is currently set for <strong>Cash on Delivery.</strong>
+            </p>
+          </div>
+
+          <div className="orderSuccessActions">
+            <Link className="button" href="/shop">
+              Continue exploring
+            </Link>
+
+            <Link className="orderBackLink" href="/">
+              Return home
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="pinkSection orderSuccessBottom">
+        <div className="section">
+          <p className="eyebrow">ART THAT FEELS PERSONAL</p>
+
+          <h2>
+            Looking for something
+            <br />
+            <em>made for you?</em>
+          </h2>
+
+          <p className="muted">
+            Explore custom artwork created around your ideas,
+            memories, references, or the feeling you want to capture.
+          </p>
+
+          <Link className="button" href="/commission">
+            Explore Custom Art
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }
