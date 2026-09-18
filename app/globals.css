@@ -809,3 +809,101 @@ select:focus {
     gap: 45px !important;
   }
 }
+ /* =========================
+    PREMIUM ARTWORK CARDS
+ ========================= */
+
+.card {
+  position: relative;
+}
+
+.card .image {
+  position: relative;
+  overflow: hidden;
+}
+
+.card .image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+
+  transition:
+    transform 0.8s cubic-bezier(0.2, 0.65, 0.25, 1),
+    filter 0.5s ease;
+}
+
+.card:hover .image img {
+  transform: scale(1.045);
+}
+
+.cardView {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+
+  padding: 10px 14px;
+
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--charcoal);
+
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+
+  opacity: 0;
+  transform: translateY(8px);
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.card:hover .cardView {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card .meta {
+  align-items: flex-start;
+}
+
+.card .meta b {
+  font-weight: 500;
+}
+
+.card .meta small {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+.cardPrice {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+/* Mobile devices do not have hover.
+   Keep the card clean instead of showing a
+   permanently visible "View artwork" label. */
+
+@media (max-width: 650px) {
+  .cardView {
+    display: none;
+  }
+
+  .card .meta {
+    padding-top: 12px;
+  }
+
+  .card .meta b {
+    font-size: 11px;
+  }
+
+  .card .meta small {
+    font-size: 9px;
+  }
+
+  .cardPrice {
+    font-size: 10px;
+  }
+}
