@@ -810,16 +810,19 @@ select:focus {
   }
 }
  /* =========================
-    PREMIUM ARTWORK CARDS
- ========================= */
+   PREMIUM ARTWORK CARDS
+========================= */
 
 .card {
   position: relative;
+  display: block;
 }
 
 .card .image {
   position: relative;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
+  background: #e5ddd6;
 }
 
 .card .image img {
@@ -834,25 +837,28 @@ select:focus {
 }
 
 .card:hover .image img {
-  transform: scale(1.045);
+  transform: scale(1.06);
+  filter: brightness(0.92);
 }
 
 .cardView {
   position: absolute;
-  left: 18px;
-  bottom: 18px;
 
-  padding: 10px 14px;
+  left: 20px;
+  bottom: 20px;
 
-  background: rgba(255, 255, 255, 0.9);
+  padding: 11px 16px;
+
+  background: rgba(247, 243, 238, 0.94);
   color: var(--charcoal);
 
   font-size: 9px;
-  letter-spacing: 0.13em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(10px);
 
   transition:
     opacity 0.3s ease,
@@ -865,38 +871,60 @@ select:focus {
 }
 
 .card .meta {
+  display: flex;
+  justify-content: space-between;
   align-items: flex-start;
+
+  gap: 20px;
+
+  padding-top: 16px;
+}
+
+.card .meta span:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .card .meta b {
+  font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .card .meta small {
+  color: var(--muted);
   font-size: 10px;
-  letter-spacing: 0.02em;
+  line-height: 1.4;
 }
 
 .cardPrice {
   white-space: nowrap;
-  font-size: 12px;
+
+  font-size: 11px;
+  font-weight: 500;
 }
 
-/* Mobile devices do not have hover.
-   Keep the card clean instead of showing a
-   permanently visible "View artwork" label. */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 650px) {
+  .card .image {
+    aspect-ratio: 4 / 5;
+  }
+
   .cardView {
     display: none;
   }
 
   .card .meta {
+    gap: 10px;
     padding-top: 12px;
   }
 
   .card .meta b {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .card .meta small {
@@ -904,6 +932,6 @@ select:focus {
   }
 
   .cardPrice {
-    font-size: 10px;
+    font-size: 9px;
   }
 }
