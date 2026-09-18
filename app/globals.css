@@ -935,3 +935,97 @@ select:focus {
     font-size: 9px;
   }
 }
+/* =========================
+   ARTWORK DETAIL PAGE
+========================= */
+
+.detailGrid {
+  align-items: start;
+}
+
+.detailImage {
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+}
+
+.detailImage img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.detailInfo {
+  padding-top: 30px;
+}
+
+.detailInfo h1 {
+  margin-bottom: 15px;
+}
+
+.specs {
+  margin-top: 45px;
+  margin-bottom: 35px;
+  gap: 0;
+}
+
+.specs > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+
+  padding: 14px 0;
+
+  border-bottom: 1px solid var(--border);
+
+  font-size: 11px;
+}
+
+.specs > div:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.specLabel {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 9px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+  .detailInfo {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 650px) {
+  .detail {
+    padding-top: 30px;
+  }
+
+  .detailGrid {
+    gap: 45px;
+    margin-top: 30px;
+  }
+
+  .detailImage {
+    aspect-ratio: 4 / 5;
+    min-height: 0;
+  }
+
+  .detailInfo h1 {
+    font-size: 48px;
+  }
+
+  .specs {
+    margin-top: 35px;
+  }
+
+  .specs > div {
+    font-size: 10px;
+  }
+}
