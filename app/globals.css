@@ -726,3 +726,86 @@ select:focus {
     grid-template-columns: 1fr;
   }
 }
+/* =========================
+   CUSTOM ARTWORK RESPONSIVE
+========================= */
+
+.commissionHero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.commissionIdeas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.commissionProcess {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.commissionFeatured {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+  .commissionHero {
+    grid-template-columns: 1fr;
+  }
+
+  .commissionIdeas {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .commissionProcess {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .commissionFeatured {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 650px) {
+  .commissionHero {
+    gap: 50px !important;
+    padding: 65px 6vw !important;
+  }
+
+  .commissionHero h1 {
+    font-size: 52px !important;
+  }
+
+  .commissionIdeas {
+    grid-template-columns: 1fr;
+    gap: 18px !important;
+  }
+
+  .commissionIdeas > div {
+    min-height: 190px !important;
+    padding: 28px !important;
+  }
+
+  .commissionProcess {
+    grid-template-columns: 1fr;
+    gap: 35px !important;
+  }
+
+  .commissionProcess h3 {
+    font-size: 23px !important;
+  }
+
+  .commissionFeatured {
+    gap: 45px !important;
+  }
+}
