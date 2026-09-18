@@ -8,13 +8,12 @@ export function ArtworkCard({ artwork }: { artwork: Artwork }) {
         <img
           src={artwork.image}
           alt={artwork.title}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-          }}
+          loading="lazy"
         />
+
+        <span className="cardView">
+          View artwork
+        </span>
       </div>
 
       <div className="meta">
@@ -23,7 +22,9 @@ export function ArtworkCard({ artwork }: { artwork: Artwork }) {
           <small>{artwork.artist}</small>
         </span>
 
-        <b>₹{artwork.price.toLocaleString("en-IN")}</b>
+        <span className="cardPrice">
+          ₹{artwork.price.toLocaleString("en-IN")}
+        </span>
       </div>
     </Link>
   );
